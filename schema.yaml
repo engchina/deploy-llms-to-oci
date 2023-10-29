@@ -1,0 +1,127 @@
+## Copyright © 2023, Oracle and/or its affiliates.
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+title: "Deploy LLMs to Oracle Cloud Infrastructure Compute instances"
+stackDescription: "Deploy Fooocus for Stable Diffusion XL"
+schemaVersion: 1.1.0
+version: "20220422"
+locale: "en"
+
+variableGroups:
+  - title: General Configuration
+    visible: false
+    variables:
+      - tenancy_ocid
+      - region
+      - release
+
+  - title: Required Configuration
+    visible: true
+    variables:
+      - display_name
+      - compartment_ocid
+
+  - title: Placement
+    visible: true
+    variables:
+      - availability_domain_name
+
+  - title: Image and shape
+    visible: false
+    variables:
+      - instance_image_ocid
+      - instance_shape
+
+  - title: Primary VNIC information
+    visible: true
+    variables:
+      - vcn_ocid
+      - subnet_ocid
+
+  - title: Add SSH keys
+    visible: true
+    variables:
+      - ssh_public_key
+
+  - title: Boot volume
+    visible: true
+    variables:
+      - bv_size
+
+variables:
+  region:
+    type: oci:identity:region:name
+    required: true
+    visible: true
+    title: "Region"
+    description: "Choose region where you want to deploy the resources defined by this stack."
+
+  display_name:
+    type: string
+    required: true
+    default: "stable-diffusion-xl-by-fooocus"
+    title: "Name"
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    visible: true
+    title: "Compartment"
+    description: "Choose compartment where you want to create the solution resources."
+
+  availability_domain_name:
+    type: oci:identity:availabilitydomain:name
+    required: true
+    title: "Availability domain"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  instance_image_ocid:
+    type: oci:core:image:id
+    required: true
+    visible: false
+    title: "Image"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  instance_shape:
+    type: oci:core:instanceshape:name
+    required: true
+    visible: false
+    default: "VM.GPU.A10.1"
+    title: "Shape"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      imageId: ${instance_image_ocid}
+
+  vcn_ocid:
+    type: oci:core:vcn:id
+    required: true
+    visible: true
+    title: "VCN"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  subnet_ocid:
+    type: oci:core:subnet:id
+    required: true
+    visible: true
+    title: "Subnet"
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      vcnId: ${vcn_ocid}
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    required: true
+    title: "Public SSH Key"
+    description: "Upload a public key that you already have."
+
+  bv_size:
+    type: number
+    required: true
+    minimum: 50
+    maximum: 32768
+    multipleOf: 1
+    default: 200
+    title: "Boot volume size (GB)"
