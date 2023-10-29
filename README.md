@@ -5,6 +5,7 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 
 Then access [http://your_instance_public_ip:7860](http://your_instance_public_ip:7860) to access Fooocus to use Stable Diffusion XL.
 
+> Make sure you can use VM.GPU.A10.1 shape, and you also have to open 7860 port in your security list.
+
 > It will take around 10-15 minutes for OCI to complete the installation & initialization.
 
-> Your also need to open 7860 port in your security list.
