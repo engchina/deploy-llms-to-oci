@@ -17,7 +17,6 @@ variable "ssh_public_key" {
 }
 
 variable "instance_shape" {
-  default = "VM.GPU.A10.1"
 }
 
 variable "display_name" {
@@ -41,3 +40,20 @@ variable "instance_image_ocid" {
 variable "bv_size" {
   default = "200" # size in GBs
 }
+
+variable "llm_tool" {
+  default = "Fooocus"
+}
+
+variable "llm_fooocus_model" {
+  default = "Stable Diffusion"
+}
+
+variable "llm_textgen_model" {
+  default = "Please download later though model tag"
+}
+
+variable "llm_fastchat_model" {
+  default = "lmsys/vicuna-7b-v1.5"
+}
+

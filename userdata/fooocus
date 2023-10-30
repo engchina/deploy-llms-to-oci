@@ -33,6 +33,13 @@ ln -s /usr/local/bin/python3.10 /usr/local/bin/python
 ln -s /usr/local/bin/pip3.10 /usr/local/bin/pip3
 ln -s /usr/local/bin/pip3.10 /usr/local/bin/pip
 
+# Install Miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+bash ~/miniconda.sh -b -p /root/miniconda
+eval "$(/root/miniconda/bin/conda shell.bash hook)"
+conda init
+conda config --set auto_activate_base false
+
 cd /root
 
 # Install Stable Diffusion web UI
@@ -47,19 +54,21 @@ cd /root
 
 # Install Fooocus
 # https://github.com/lllyasviel/Fooocus
+conda create -n fooocus_env python=3.11 -y
+conda activate fooocus_env
+
 git clone https://github.com/lllyasviel/Fooocus.git
 cd Fooocus
-python -m venv fooocus_env
-source ./fooocus_env/bin/activate
 pip install pygit2==1.12.2
-pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+conda install -y -c "nvidia/label/cuda-12.1.0" cuda-runtime
 pip install -r requirements_versions.txt
 
 # Create start_fooocus.sh
 cat << EOF > start_fooocus.sh
 #!/bin/bash
-cd /root/Fooocus
-source ./fooocus_env/bin/activate
+eval "$(/root/miniconda/bin/conda shell.bash hook)"
+conda activate fooocus_env
 nohup python entry_with_update.py --listen &
 EOF
 
@@ -67,11 +76,11 @@ chmod +x start_fooocus.sh
 
 # Setup Crontab
 cat << EOF > crontab.txt
-@reboot /root/Fooocus/start_fooocus.sh
+@reboot /bin/bash /root/Fooocus/start_fooocus.sh
 EOF
 
 crontab crontab.txt
 
 # Start Fooocus
-/root/Fooocus/start_fooocus.sh
+/bin/bash /root/Fooocus/start_fooocus.sh
 

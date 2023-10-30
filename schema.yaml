@@ -2,7 +2,7 @@
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
 title: "Deploy LLMs to Oracle Cloud Infrastructure Compute instances"
-stackDescription: "Deploy Fooocus for Stable Diffusion XL"
+stackDescription: "Deploy LLMs to Oracle Cloud Infrastructure Compute instances"
 schemaVersion: 1.1.0
 version: "20220422"
 locale: "en"
@@ -18,6 +18,10 @@ variableGroups:
   - title: Required Configuration
     visible: true
     variables:
+      - llm_tool
+      - llm_fooocus_model
+      - llm_fastchat_model
+      - llm_textgen_model
       - display_name
       - compartment_ocid
 
@@ -27,9 +31,9 @@ variableGroups:
       - availability_domain_name
 
   - title: Image and shape
-    visible: false
+    visible: true
     variables:
-      - instance_image_ocid
+      #      - instance_image_ocid
       - instance_shape
 
   - title: Primary VNIC information
@@ -56,10 +60,67 @@ variables:
     title: "Region"
     description: "Choose region where you want to deploy the resources defined by this stack."
 
+  llm_tool:
+    type: enum
+    required: true
+    title: "LLM Tool"
+    enum:
+      - "Fooocus"
+      - "FastChat"
+      - "Text generation web UI"
+    default: "Fooocus"
+
+  llm_fooocus_model:
+    type: enum
+    required: true
+    title: "LLM Model"
+    enum:
+      - "Stable Diffusion"
+    default: "Stable Diffusion"
+    visible:
+      and:
+        - eq:
+            - llm_tool
+            - "Fooocus"
+
+  llm_fastchat_model:
+    type: enum
+    required: true
+    title: "LLM Model"
+    enum:
+      - "lmsys/vicuna-7b-v1.5"
+      - "lmsys/vicuna-7b-v1.5-16k"
+      - "lmsys/longchat-7b-v1.5-32k"
+      - "lmsys/vicuna-13b-v1.5"
+      - "lmsys/vicuna-13b-v1.5-16k"
+      - "meta-llama/Llama-2-7b-chat-hf"
+      - "codellama/CodeLlama-7b-Instruct-hf"
+      - "codellama/CodeLlama-13b-Instruct-hf"
+      - "mosaicml/mpt-7b-chat"
+      - "Qwen/Qwen-7B-Chat"
+      - "THUDM/chatglm2-6b"
+      - "internlm/internlm-chat-7b"
+      - "HuggingFaceH4/zephyr-7b-alpha"
+    default: "lmsys/vicuna-7b-v1.5"
+    visible:
+      and:
+        - eq:
+            - llm_tool
+            - "FastChat"
+
+  llm_textgen_model:
+    type: enum
+    required: false
+    title: "LLM Model"
+    enum:
+      - "Please download later though model tag"
+    default: "Please download later though model tag"
+    visible: false
+
   display_name:
     type: string
     required: true
-    default: "stable-diffusion-xl-by-fooocus"
+    default: "llm-instance"
     title: "Name"
 
   compartment_ocid:
@@ -85,14 +146,17 @@ variables:
       compartmentId: ${compartment_ocid}
 
   instance_shape:
-    type: oci:core:instanceshape:name
+    type: enum
     required: true
-    visible: false
-    default: "VM.GPU.A10.1"
     title: "Shape"
+    enum:
+      - "VM.GPU.A10.1"
+      - "VM.GPU.A10.2"
+    default: "VM.GPU.A10.1"
     dependsOn:
       compartmentId: ${compartment_ocid}
-      imageId: ${instance_image_ocid}
+  #      imageId: ${instance_image_ocid}
+
 
   vcn_ocid:
     type: oci:core:vcn:id

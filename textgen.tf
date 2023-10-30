@@ -1,4 +1,5 @@
-resource "oci_core_instance" "ai_instance" {
+resource "oci_core_instance" "textgen_instance" {
+  count               = (var.llm_tool == "Text generation web UI") ? 1 : 0
   compartment_id      = var.compartment_ocid
   availability_domain = var.availability_domain_name
   display_name        = var.display_name
@@ -20,7 +21,7 @@ resource "oci_core_instance" "ai_instance" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(file("./userdata/bootstrap"))
+    user_data           = base64encode(file("./userdata/text-generation-webui"))
   }
 
   timeouts {
