@@ -61,9 +61,10 @@ cat << "EOF" > start_fastchat.sh
 eval "$(/root/miniconda/bin/conda shell.bash hook)"
 conda activate fastchat
 nohup python3 -m fastchat.serve.controller &
-nohup python3 -m fastchat.serve.model_worker --model-path ${var.llm_fastchat_model} &
-nohup python3 -m fastchat.serve.openai_api_server --listen &
-nohup python3 -m fastchat.serve.gradio_web_server --listen &
+nohup python3 -m fastchat.serve.model_worker --model-path ${llm_fastchat_model} --model-names "chat,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-4,gpt-4-32k,text-embedding-ada-002,text-davinci-003" --controller http://localhost:21001 --worker http://localhost:31000 --port 31000 &
+sleep 180
+nohup python3 -m fastchat.serve.openai_api_server --host 0.0.0.0 --port 8000 &
+nohup python3 -m fastchat.serve.gradio_web_server --host 0.0.0.0 --port 7860 &
 EOF
 
 chmod +x start_fastchat.sh

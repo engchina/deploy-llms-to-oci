@@ -49,10 +49,6 @@ variable "llm_fooocus_model" {
   default = "Stable Diffusion"
 }
 
-variable "llm_textgen_model" {
-  default = "Please download later though model tag"
-}
-
 variable "llm_fastchat_model" {
   default = "lmsys/vicuna-7b-v1.5"
 }

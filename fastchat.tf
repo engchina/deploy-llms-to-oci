@@ -21,7 +21,8 @@ resource "oci_core_instance" "fastchat_instance" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(file("./userdata/fastchat"))
+    # user_data         = base64encode(file("./userdata/fastchat.tpl"))
+    user_data           = base64encode(data.template_file.fastchat_bootstrap_template.rendered)
   }
 
   timeouts {

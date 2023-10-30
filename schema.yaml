@@ -21,7 +21,6 @@ variableGroups:
       - llm_tool
       - llm_fooocus_model
       - llm_fastchat_model
-      - llm_textgen_model
       - display_name
       - compartment_ocid
 
@@ -107,15 +106,6 @@ variables:
         - eq:
             - llm_tool
             - "FastChat"
-
-  llm_textgen_model:
-    type: enum
-    required: false
-    title: "LLM Model"
-    enum:
-      - "Please download later though model tag"
-    default: "Please download later though model tag"
-    visible: false
 
   display_name:
     type: string

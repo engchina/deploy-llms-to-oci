@@ -21,7 +21,7 @@ resource "oci_core_instance" "textgen_instance" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(file("./userdata/text-generation-webui"))
+    user_data           = base64encode(file("./userdata/textgen.tpl"))
   }
 
   timeouts {

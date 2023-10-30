@@ -21,7 +21,7 @@ resource "oci_core_instance" "sd_instance" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(file("./userdata/fooocus"))
+    user_data           = base64encode(file("./userdata/fooocus.tpl"))
   }
 
   timeouts {
