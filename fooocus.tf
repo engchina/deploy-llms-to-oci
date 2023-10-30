@@ -1,5 +1,5 @@
 resource "oci_core_instance" "sd_instance" {
-  count               = (var.llm_model == "Stable Diffusion") ? 1 : 0
+  count               = (var.llm_tool == "Fooocus") ? 1 : 0
   compartment_id      = var.compartment_ocid
   availability_domain = var.availability_domain_name
   display_name        = var.display_name
@@ -21,7 +21,7 @@ resource "oci_core_instance" "sd_instance" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(file("./userdata/stable-diffusion"))
+    user_data           = base64encode(file("./userdata/fooocus"))
   }
 
   timeouts {
