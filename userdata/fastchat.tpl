@@ -61,7 +61,9 @@ cat << "EOF" > start_fastchat.sh
 eval "$(/root/miniconda/bin/conda shell.bash hook)"
 conda activate fastchat
 nohup python3 -m fastchat.serve.controller &
-nohup python3 -m fastchat.serve.model_worker --model-path ${llm_fastchat_model} --model-names "chat,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-4,gpt-4-32k,text-embedding-ada-002,text-davinci-003" --controller http://localhost:21001 --worker http://localhost:31000 --port 31000 &
+nohup python3 -m fastchat.serve.model_worker --model-path ${llm_fastchat_model} --model-names "chat,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-4,gpt-4-32k,text-davinci-003" --controller http://localhost:21001 --worker http://localhost:31000 --port 31000 --max-gpu-memory 16Gib &
+# nohub python3 -m fastchat.serve.vllm_worker --trust-remote-code --model-path ${llm_fastchat_model} --model-names "vicuna-7b,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-4,text-davinci-003" --controller http://localhost:21001 --port 31000 --worker-address http://localhost:31000 --gpu-memory-utilization 0.8 &
+nohup python3 -m fastchat.serve.model_worker --model-path intfloat/multilingual-e5-large --model-names "text-embedding-ada-002" --controller http://localhost:21001 --port 31009 --worker http://localhost:31009 --max-gpu-memory 16Gib &
 sleep 180
 nohup python3 -m fastchat.serve.openai_api_server --host 0.0.0.0 --port 8000 &
 nohup python3 -m fastchat.serve.gradio_web_server --host 0.0.0.0 --port 7860 &
